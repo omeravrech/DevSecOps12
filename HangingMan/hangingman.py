@@ -1,4 +1,5 @@
-sentences_list = [
+POINTS_PER_GUESS = 5
+SENTENCES_LIST = [
     ["Next", "big", "feat?"],
     ["Get", "over", "it"],
     ["Grace", "under", "pressure"],
@@ -43,12 +44,8 @@ sentences_list = [
     ["Nurture", "your", "best"]
 ]
 
-def is_sentence(sentence: list | None = None):
-    """
-    Verify if the list i a valid sentences who build from words
-    :param sentence:
-    :return: True\False
-    """
+def is_sentence(sentence: list | None = None) -> bool:
+    """ Verify if the list is a valid sentences who build from words """
     if type(sentence) != list:
         return False
 
@@ -62,13 +59,23 @@ def is_sentence(sentence: list | None = None):
             return False
 
     return True
-def is_char(char: str | None = None):
+
+
+def is_char(char: str | None = None) -> bool:
+    ''' Validate that given string is 1 alpha-numeric character '''
     return type(char) == str and len(char) == 1 and char.isalpha()
-def sentence_len(sentence: list | None = None):
+
+
+def sentence_len(sentence: list | None = None) -> int:
+    ''' Return the length of a given sentence '''
     if is_sentence(sentence):
         return len("".join(sentence))
+    return 0
 
-def hide_chars(sentence: list | None = None):
+
+def hide_chars(sentence: list | None = None) -> list | None:
+    ''' Return the given setences with hidden characters '''
+
     # Verify if the sent sentence is a valid
     if not is_sentence(sentence):
         return None
@@ -80,20 +87,23 @@ def hide_chars(sentence: list | None = None):
             hidden_sentence += "_"
         else:
             hidden_sentence += char
+
     return hidden_sentence.split(" ")
 
-def index_char_in_sentence(sentence: list | None = None, char: str | None = None):
+
+def index_char_in_sentence(sentence: list | None = None, char: str | None = None) -> list | None:
     if not is_sentence(sentence) or not is_char(char):
         return None
 
     indexes = []
     s = " ".join(sentence)
-    for i in range(len(s)):
-        if s[i].lower() == char:
-            indexes.append(i)
+    for index, _char in enumerate(s):
+        if _char.lower() == char.lower():
+            indexes.append(index)
     return indexes
 
-def update_hidden_sentence(sentence: list = [], indexes: list = [], char:str=""):
+
+def update_hidden_sentence(sentence: list = [], indexes: list = [], char:str="") -> str | None:
     if len(sentence) == 0 or len(indexes) == 0 or not is_char(char):
         return None
 
@@ -103,26 +113,35 @@ def update_hidden_sentence(sentence: list = [], indexes: list = [], char:str="")
 
     return s.split(" ")
 
-def game_round(sentence: list | None = None):
+
+def game_round(sentence: list | None = None) -> int | None:
     if not is_sentence(sentence):
         return None
 
     hide_sentence = hide_chars(sentence)
-    word_left = sentence_len(sentence) - 1
-    print(f"Let's start the Game! the is the sentence you need to guess: {hide_sentence}")
+    word_left = sentence_len(sentence)
+    score = 0
+    print(f"Let's start the Game! the is the sentence you need to guess: {' '.join(hide_sentence)}")
 
-    while word_left:
-        guess = input(f"Please enter your guess: ")
+    while word_left > 0:
+        guess = input(f"Please enter your guess: ").lower()
         indexes = index_char_in_sentence(sentence, guess)
         if indexes == None:
             print("Invalid guess, please try again")
-            continue
+        elif guess in "".join(hide_sentence):
+            print("Char already been gueesed")
+        else:
+            s = update_hidden_sentence(hide_sentence, indexes, guess)
+            if s:
+                hide_sentence = s
+                successful_guesses = len(indexes)
+                word_left -= successful_guesses
+                if successful_guesses:
+                    score += successful_guesses * POINTS_PER_GUESS
+                else:
+                    score -= 1
 
-        s = update_hidden_sentence(hide_sentence, indexes, guess)
-        if s:
-            hide_sentence = s
-            word_left -= len(indexes)
-
-        print(hide_sentence)
+        print(f"Try again! You left {word_left} characters to guess: {' '.join(hide_sentence)}")
 
     print("Congrats!!! you succeed to solve this!")
+    return score
