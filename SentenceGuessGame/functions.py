@@ -1,13 +1,11 @@
-from os import getcwd
+from os import path
 
 POINTS_PER_GUESS = 5
 
 def load_sentences() -> list:
     ''' Read sentences from file '''
     returned_array = []
-
-    path = ".\\sentences.txt" if "SentenceGuessGame" in getcwd() else ".\\SentenceGuessGame\\sentences.txt"
-    with open(path, "r+") as sentences:
+    with open(f"{path.dirname(__file__)}\\sentences.txt", "r+") as sentences:
         for sentence in sentences:
             returned_array.append(sentence.strip().split(' '))
     
