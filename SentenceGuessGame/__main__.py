@@ -2,24 +2,27 @@ import functions
 import random
 from time import time_ns
 
+SENTENCES_LIST = functions.load_sentences()
+
 def specific_chooice():
     ''' This function handle the option to choose a sentence by the user '''
-    print("Please choose one of this sentences:")
-    for i, sentence in enumerate(functions.SENTENCES_LIST):
+
+    print("Please choose one of this sentences (0 for exit):")
+    for i, sentence in enumerate(SENTENCES_LIST):
         print(f"{i+1}. {' '.join(sentence)}")
     
     while True:
         choice = input("Enter your choice : ")
         try:
-            choice = int(choice) -1
-            print(f"Choice = {choice}")
-            if choice < 0 or choice > len(functions.SENTENCES_LIST):
-                raise OverflowError()
-            break
+            choice = int(choice)
         except:
+            choice = -1
+        if choice < 0 or choice >= len(SENTENCES_LIST):
             print("Please enter valid number")
-
-    return functions.SENTENCES_LIST[choice]
+        elif choice == 0:
+            return None
+        else:
+            return SENTENCES_LIST[choice -1]
 
 
 def main():
@@ -35,7 +38,7 @@ def main():
         },
         {
             "description" : "Random chooice",
-            "function": lambda: random.choice(functions.SENTENCES_LIST)
+            "function": lambda: random.choice(SENTENCES_LIST)
         },
         {
             "description" : "Choose your sentence",
@@ -53,14 +56,16 @@ def main():
 
         user_choice = input("Enter your chooice: ")
         if user_choice.isdigit() and 0 <= int(user_choice) < len(MAIN_MENU):
-            func = MAIN_MENU[int(user_choice)]["function"]
-            start_time = time_ns()      # Save the current timestamp for the start of this one game in nanoseconds
-            one_game_score = functions.game_round(func())
-            if one_game_score != None:
-                if (time_ns() - start_time)//(10**9) <= 30: # calculate if the end time minus start time is smaller then 30 seconds 
-                    one_game_score += 100
-                score += one_game_score
-            print(f"You get {one_game_score} points from this game. You have {score} points in total")
+            get_sentence = MAIN_MENU[int(user_choice)]["function"]
+            sentence = get_sentence()
+            if sentence != None:
+                start_time = time_ns()      # Save the current timestamp for the start of this one game in nanoseconds
+                one_game_score = functions.game_round()
+                if one_game_score != None:
+                    if (time_ns() - start_time)//(10**9) <= 30: # calculate if the end time minus start time is smaller then 30 seconds 
+                        one_game_score += 100
+                    score += one_game_score
+                print(f"You get {one_game_score} points from this game. You have {score} points in total")
         else:
             print("Invalid input!")
 

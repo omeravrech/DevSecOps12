@@ -1,48 +1,18 @@
+from os import getcwd
+
 POINTS_PER_GUESS = 5
-SENTENCES_LIST = [
-    ["Next", "big", "feat?"],
-    ["Get", "over", "it"],
-    ["Grace", "under", "pressure"],
-    ["Go", "for", "it"],
-    ["Handle", "breakdowns", "immediately"],
-    ["Happiness", "is", "Choice"],
-    ["Health", "is", "wealth"],
-    ["Hope", "trumps", "all"],
-    ["Identify", "key", "milestones"],
-    ["It", "is", "possible"],
-    ["Judgement", "free", "zone"],
-    ["Just", "be", "awesome"],
-    ["Keep", "it", "cool"],
-    ["Keep", "information", "flowing"],
-    ["Keep", "it", "simple"],
-    ["Keep", "morale", "high"],
-    ["Knowledge", "is", "power"],
-    ["Laughter", "is", "best"],
-    ["Leaders", "are", "early"],
-    ["Learn", "from", "yesterday"],
-    ["Let", "it", "go"],
-    ["Laughter", "is", "medicine"],
-    ["Life", "is", "awesome"],
-    ["Life", "is", "beautiful"],
-    ["Life", "won’t", "wait"],
-    ["Live", "life", "daily"],
-    ["Live,", "love,", "laugh"],
-    ["Live", "your", "potential"],
-    ["Love", "endures", "delay"],
-    ["Love", "is", "everything"],
-    ["Manage", "your", "reputation"],
-    ["Manage", "your", "resistance"],
-    ["Manage", "resources", "effectively"],
-    ["Massive", "motions", "mesmerize"],
-    ["Mastery", "abhors", "mediocrity"],
-    ["Model", "the", "masters"],
-    ["Money", "amplifies", "emotions"],
-    ["Monitor", "budgets", "regularly"],
-    ["Never", "give", "up"],
-    ["Never", "look", "back"],
-    ["Nothing", "is", "Impossible"],
-    ["Nurture", "your", "best"]
-]
+
+def load_sentences() -> list:
+    ''' Read sentences from file '''
+    returned_array = []
+
+    path = ".\\sentences.txt" if "SentenceGuessGame" in getcwd() else ".\\SentenceGuessGame\\sentences.txt"
+    with open(path, "r+") as sentences:
+        for sentence in sentences:
+            returned_array.append(sentence.strip().split(' '))
+    
+    return returned_array
+            
 
 def is_sentence(sentence: list | None = None) -> bool:
     """ Verify if the list is a valid sentences who build from words """
