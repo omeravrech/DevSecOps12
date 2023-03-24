@@ -58,14 +58,16 @@ def main():
         if user_choice.isdigit() and 0 <= int(user_choice) < len(MAIN_MENU):
             get_sentence = MAIN_MENU[int(user_choice)]["function"]
             sentence = get_sentence()
-            if sentence != None:
-                start_time = time_ns()      # Save the current timestamp for the start of this one game in nanoseconds
-                one_game_score = functions.game_round()
-                if one_game_score != None:
-                    if (time_ns() - start_time)//(10**9) <= 30: # calculate if the end time minus start time is smaller then 30 seconds 
-                        one_game_score += 100
-                    score += one_game_score
-                print(f"You get {one_game_score} points from this game. You have {score} points in total")
+            if sentence == None:
+                continue
+                
+            start_time = time_ns()      # Save the current timestamp for the start of this one game in nanoseconds
+            one_game_score = functions.game_round(sentence)
+            if one_game_score != None:
+                if (time_ns() - start_time)//(10**9) <= 30: # calculate if the end time minus start time is smaller then 30 seconds 
+                    one_game_score += 100
+                score += one_game_score
+            print(f"You get {one_game_score} points from this game. You have {score} points in total")
         else:
             print("Invalid input!")
 
