@@ -92,6 +92,7 @@ def hide_chars(sentence: list | None = None) -> list | None:
 
 
 def index_char_in_sentence(sentence: list | None = None, char: str | None = None) -> list | None:
+    ''' This function responsible for find the indexes of given char in a given sentence '''
     if not is_sentence(sentence) or not is_char(char):
         return None
 
@@ -104,6 +105,8 @@ def index_char_in_sentence(sentence: list | None = None, char: str | None = None
 
 
 def update_hidden_sentence(sentence: list = [], indexes: list = [], char:str="") -> str | None:
+    ''' Responsible for recive hidden sentence, list of indexes and a char, and locate the char
+        in the sentnce based on the indexes '''
     if len(sentence) == 0 or len(indexes) == 0 or not is_char(char):
         return None
 
@@ -115,6 +118,7 @@ def update_hidden_sentence(sentence: list = [], indexes: list = [], char:str="")
 
 
 def game_round(sentence: list | None = None) -> int | None:
+    ''' Responsible for one game logic '''
     if not is_sentence(sentence):
         return None
 
