@@ -1,6 +1,5 @@
 import requests
 
-
 class User:
     def __init__(self, d:dict):
         self.__dict__ = d
@@ -14,14 +13,16 @@ class User:
 
 class SpeedUser:
     @classmethod
-    def generate(self) -> list[User]:
-        result = []
-
-        res = requests.get("https://jsonplaceholder.typicode.com/users", verify=False) # I add verify because on my computer I have security features that interfere in the traffic.
-        if 200 > res.status_code or res.status_code > 299:
-            return result
+    def generate(self, url) -> list[User]:
+        result = list()
+        try:
+            res = requests.get(url, verify=False) # I add verify because on my computer I have security features that interfere in the traffic.
+            if 200 > res.status_code or res.status_code > 299:
+                raise requests.HTTPError(res)
         
-        users = res.json()
-        for user in users:
-            result.append(User(user))
+            users = res.json()
+            for user in users:
+                result.append(User(user))
+        except:
+            result.clear()
         return result

@@ -1,10 +1,13 @@
 from speeduser import SpeedUser
 import math
 
+# CONST
+users_api_url = "https://jsonplaceholder.typicode.com/users"
+
 print("### Question 3 ###\n")
 
 
-users = SpeedUser.generate()
+users = SpeedUser.generate(users_api_url)
 for user in users:
     print(user)
 
