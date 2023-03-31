@@ -1,9 +1,7 @@
 from speeduser import SpeedUser
 import math
 
-
-
-print("### Question 3 ###")
+print("### Question 3 ###\n")
 
 
 users = SpeedUser.generate()
@@ -11,7 +9,7 @@ for user in users:
     print(user)
 
 
-print("### Question 4 ###")
+print("\n### Question 4 ###\n")
 
 
 retrived_lat = 0
