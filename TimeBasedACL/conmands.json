@@ -1,0 +1,9 @@
+[
+    "time-range <TR_NAME>",
+    "periodic <PERIODIC> <START_TIME> to <END_TIME>",
+    "ip access-list extended <ACL_NAME>",
+    "deny tcp any host 192.168.23.3 eq 80 time-range <TR_NAME>",
+    "permit ip any any",
+    "interface <INTERFACE>",
+    "ip access-group <ACL_NAME> in"
+]

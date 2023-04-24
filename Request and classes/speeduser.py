@@ -14,6 +14,9 @@ class User:
 class SpeedUser:
     @classmethod
     def generate(self, url) -> list[User]:
+        '''
+        Static function that generate users based on given api
+        '''
         result = list()
         try:
             res = requests.get(url, verify=False) # I add verify because on my computer I have security features that interfere in the traffic.
