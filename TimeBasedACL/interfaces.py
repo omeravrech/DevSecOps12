@@ -1,3 +1,5 @@
+from enums import UserMode
+
 class IRouter:
     def __init__(self, **kwargs) -> None:
         for k, v in kwargs.items():
@@ -8,6 +10,9 @@ class IRouter:
         return self._connected
     
     def connect(self) -> None:
+        raise NotImplementedError()
+    
+    def check_user_mode(self) -> UserMode:
         raise NotImplementedError()
     
     def execute(self, commands) -> str:

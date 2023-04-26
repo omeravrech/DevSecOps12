@@ -1,6 +1,9 @@
 from paramiko import SSHClient, AutoAddPolicy
 from interfaces import IRouter
+from enums import UserMode
 from time import sleep
+import re
+
 
 class CiscoRouter(IRouter):
     def __init__(self, **kwargs) -> None:
@@ -27,7 +30,16 @@ class CiscoRouter(IRouter):
         except Exception as e:
             print("Connection aborted due to error.",e)
             self._connected = False
-        
+            
+    def check_user_mode(self) -> UserMode:
+        if not self.is_connected():
+            raise ConnectionError()
+        output = self.execute("")
+        if re.search(r"\(\w+(-){0,1}\w+\)#$", output, re.MULTILINE):
+            return UserMode.config
+        if re.search(r"#$", output, re.MULTILINE):
+            return UserMode.admin
+        return UserMode.user
         
     def execute(self, commands) -> str:
         # Connection must be open before execute commands
@@ -66,6 +78,7 @@ class CiscoRouter(IRouter):
             
             
     def close(self) -> None:
+        #  If connection is open, then try to close it
         if self.is_connected():
             try:
                 self.__connection.close()
