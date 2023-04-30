@@ -4,9 +4,10 @@ class Vendors(Enum):
     Cisco = 1
     
 class UserMode(Enum):
-    user=0
-    admin=1
-    config=2
+    unclear=0
+    user=1
+    admin=2
+    config=3
 
 class Periodic(Enum):
     Daily=0         # Every day of the week

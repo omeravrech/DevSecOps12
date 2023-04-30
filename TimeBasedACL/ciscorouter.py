@@ -8,6 +8,8 @@ import re
 class CiscoRouter(IRouter):
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
+        self.__connection = None
+        self.__shell = None
     
     def connect(self) -> None:
         # Verify first if connection isn't open already
@@ -25,7 +27,7 @@ class CiscoRouter(IRouter):
         
         # Connection open attempt
         try:
-            self.__connection.connect(address, port,user,passwd)
+            self.__connection.connect(address, port=port, username=user, password=passwd, allow_agent=False,look_for_keys=False)
             self._connected = True
         except Exception as e:
             print("Connection aborted due to error.",e)
@@ -35,11 +37,14 @@ class CiscoRouter(IRouter):
         if not self.is_connected():
             raise ConnectionError()
         output = self.execute("")
-        if re.search(r"\(\w+(-){0,1}\w+\)#$", output, re.MULTILINE):
+        if re.search(r"\(\w+(-){0,1}\w+\)#", output, re.MULTILINE):
             return UserMode.config
-        if re.search(r"#$", output, re.MULTILINE):
+        elif re.search(r"#", output, re.MULTILINE):
             return UserMode.admin
-        return UserMode.user
+        elif re.search(r">", output, re.MULTILINE):
+            return UserMode.user
+        else:
+            return UserMode.unclear
         
     def execute(self, commands) -> str:
         # Connection must be open before execute commands
@@ -57,15 +62,18 @@ class CiscoRouter(IRouter):
         
         try:
             # Execute commands one by one
-            shell = self.__connection.invoke_shell()
+            if self.__shell is None:
+                self.__shell = self.__connection.invoke_shell()
+            self.__shell.recv(-1) # clear buffer
+            
             for command in commands:
                 if isinstance(command,str):
-                    shell.send(f"{command}\n")
+                    self.__shell.send(f"{command}\n")
 
             # read all data from router
             while True:
                 sleep(2) # is there is delay in traffic
-                data_from_router = shell.recv(-1).decode("utf-8")
+                data_from_router = self.__shell.recv(-1).decode("utf-8")
                 if data_from_router == '': # No data received anymore
                     break
                 stdout += data_from_router
@@ -73,7 +81,7 @@ class CiscoRouter(IRouter):
         except Exception as e:
             print("Connection aborted due to error.",e)
             self._connected = False # If there is any type of issue it mean the connection is close
-        
+                
         return stdout
             
             
