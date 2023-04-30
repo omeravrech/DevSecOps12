@@ -1,5 +1,4 @@
 from enums import UserMode
-from interfaces import IRouter
 from routerfactory import RouterFactory
 import re
 
